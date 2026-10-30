@@ -267,6 +267,7 @@ CMakeFiles/p.dir/src/core.cpp.o: /home/sree/Phantom/Anipunch/src/core.cpp \
  /home/sree/Phantom/Anipunch/include/SDL_ttf.h \
  /home/sree/Phantom/Anipunch/include/SDL_mixer.h \
  /home/sree/Phantom/Anipunch/include/api.hpp \
+ /home/sree/Phantom/Anipunch/include/SDL_mixer.h \
  /home/sree/Phantom/Anipunch/include/SDL_ttf.h /usr/include/c++/16/memory \
  /usr/include/c++/16/bits/memoryfwd.h \
  /usr/include/c++/16/bits/allocator.h \

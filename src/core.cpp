@@ -28,6 +28,7 @@ namespace core{
         if ((Mix_Init(sound_flags) & sound_flags) != sound_flags){
             return {false, Mix_GetError()};
         }
+        Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024);
         getWindow()=SDL_CreateWindow(getTitle(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, getW(), getH(), SDL_WINDOW_HIDDEN);
         if (!getWindow()){
             return {false, SDL_GetError()};
@@ -71,6 +72,7 @@ namespace core{
         if (getWindow()){
             SDL_DestroyWindow(getWindow());
         }
+        Mix_CloseAudio();
         Mix_Quit();
         TTF_Quit();
         IMG_Quit();

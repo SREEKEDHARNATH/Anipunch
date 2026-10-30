@@ -1,5 +1,6 @@
 #pragma once
 
+#include "SDL_mixer.h"
 #include "SDL_pixels.h"
 #include "SDL_rect.h"
 #include "SDL_render.h"
@@ -35,4 +36,26 @@ namespace core::api {
             void setText(const char* txt);
             const char* getText();
     };
+    class sound{
+        std::shared_ptr<Mix_Chunk> ptr;
+        public:
+            sound(const char* file);
+            void play(bool loops=false);
+            void setVol(int v);
+            int getVol();
+            Mix_Chunk* get();
+    };
+    class music{
+        std::shared_ptr<Mix_Music> ptr;
+        public:
+            music(const char* file);
+            void play(bool loops=false);
+            void pause();
+            void resume();
+            void halt();
+            void setVol(int v);
+            int getVol();
+            Mix_Music* get();
+    };
+    
 }

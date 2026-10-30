@@ -1,8 +1,10 @@
 #include "api.hpp"
 #include "SDL_image.h"
+#include "SDL_mixer.h"
 #include "SDL_render.h"
 #include "SDL_ttf.h"
 #include "core.hpp"
+#include <algorithm>
 #include <iostream>
 namespace core::api {
     image::image(const char* file, bool load, bool autoset){
@@ -92,5 +94,69 @@ namespace core::api {
     }
     const char* text::getText(){
         return t.c_str();
+    }
+
+    sound::sound(const char* file){
+        auto c=Mix_LoadWAV(file);
+        if (!c){
+            std::cerr << Mix_GetError();
+            return;
+        }
+        ptr.reset(c, Mix_FreeChunk);
+        setVol(50);
+    }
+    void sound::play(bool loops){
+        if (get()){
+            Mix_PlayChannel(-1, get(), loops);
+        }
+    }
+    void sound::setVol(int v){
+        v=std::min(v, 100);
+        v=std::max(v, 0);
+        
+        if (get()){
+            Mix_VolumeChunk(get(), v);
+        }
+    }
+    int sound::getVol(){
+        if (get()){
+            return get()->volume;
+        }
+        return -1;
+    }
+    Mix_Chunk* sound::get(){
+        return ptr.get();
+    }
+
+    music::music(const char* file){
+        auto c=Mix_LoadMUS(file);
+        if (!c){
+            std::cerr << Mix_GetError();
+            return;
+        }
+        ptr.reset(c, Mix_FreeMusic);
+        setVol(50);
+    }
+    void music::play(bool loops){
+        if (get()){
+            Mix_PlayMusic(get(), loops);
+        }
+    }
+    void music::setVol(int v){
+        v=std::min(v, 100);
+        v=std::max(v, 0);
+        
+        if (get()){
+            Mix_VolumeMusic(v);
+        }
+    }
+    int music::getVol(){
+        if (get()){
+            return Mix_GetMusicVolume(get());
+        }
+        return -1;
+    }
+    Mix_Music* music::get(){
+        return ptr.get();
     }
 }
