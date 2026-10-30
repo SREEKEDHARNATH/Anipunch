@@ -1,0 +1,3 @@
+/home/sree/Phantom/Anipunch/build/CMakeFiles/p.dir
+/home/sree/Phantom/Anipunch/build/CMakeFiles/edit_cache.dir
+/home/sree/Phantom/Anipunch/build/CMakeFiles/rebuild_cache.dir

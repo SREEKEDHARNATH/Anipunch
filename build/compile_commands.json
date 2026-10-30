@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/sree/Phantom/Anipunch/build",
+  "command": "/usr/sbin/c++  -I/home/sree/Phantom/Anipunch/include -std=gnu++20 -o CMakeFiles/p.dir/src/main.cpp.o -c /home/sree/Phantom/Anipunch/src/main.cpp",
+  "file": "/home/sree/Phantom/Anipunch/src/main.cpp",
+  "output": "CMakeFiles/p.dir/src/main.cpp.o"
+}
+]
