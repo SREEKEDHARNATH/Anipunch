@@ -1,6 +1,6 @@
 CMakeFiles/p.dir/src/api.cpp.o: /home/sree/Phantom/Anipunch/src/api.cpp \
  /usr/include/stdc-predef.h /home/sree/Phantom/Anipunch/include/api.hpp \
- /home/sree/Phantom/Anipunch/include/SDL_rect.h \
+ /home/sree/Phantom/Anipunch/include/SDL_pixels.h \
  /home/sree/Phantom/Anipunch/include/SDL_stdinc.h \
  /home/sree/Phantom/Anipunch/include/SDL_config.h \
  /home/sree/Phantom/Anipunch/include/SDL_platform.h \
@@ -104,108 +104,15 @@ CMakeFiles/p.dir/src/api.cpp.o: /home/sree/Phantom/Anipunch/src/api.cpp \
  /usr/include/c++/16/tr1/poly_laguerre.tcc \
  /usr/include/c++/16/tr1/riemann_zeta.tcc \
  /usr/lib/gcc/x86_64-pc-linux-gnu/16/include/float.h \
- /home/sree/Phantom/Anipunch/include/SDL_error.h \
- /home/sree/Phantom/Anipunch/include/SDL_pixels.h \
  /home/sree/Phantom/Anipunch/include/SDL_endian.h \
+ /home/sree/Phantom/Anipunch/include/SDL_rect.h \
+ /home/sree/Phantom/Anipunch/include/SDL_error.h \
  /home/sree/Phantom/Anipunch/include/SDL_rwops.h \
  /home/sree/Phantom/Anipunch/include/SDL_render.h \
  /home/sree/Phantom/Anipunch/include/SDL_video.h \
  /home/sree/Phantom/Anipunch/include/SDL_surface.h \
  /home/sree/Phantom/Anipunch/include/SDL_blendmode.h \
- /usr/include/c++/16/memory /usr/include/c++/16/bits/memoryfwd.h \
- /usr/include/c++/16/bits/allocator.h \
- /usr/include/c++/16/x86_64-pc-linux-gnu/bits/c++allocator.h \
- /usr/include/c++/16/bits/new_allocator.h \
- /usr/include/c++/16/bits/new_throw.h \
- /usr/include/c++/16/bits/stl_tempbuf.h \
- /usr/include/c++/16/bits/stl_uninitialized.h \
- /usr/include/c++/16/ext/alloc_traits.h \
- /usr/include/c++/16/bits/alloc_traits.h \
- /usr/include/c++/16/bits/stl_raw_storage_iter.h \
- /usr/include/c++/16/bits/align.h \
- /usr/include/c++/16/bits/uses_allocator.h \
- /usr/include/c++/16/bits/unique_ptr.h /usr/include/c++/16/tuple \
- /usr/include/c++/16/bits/invoke.h /usr/include/c++/16/bits/ranges_util.h \
- /usr/include/c++/16/bits/ranges_base.h \
- /usr/include/c++/16/initializer_list \
- /usr/include/c++/16/bits/max_size_type.h /usr/include/c++/16/numbers \
- /usr/include/c++/16/bits/functional_hash.h \
- /usr/include/c++/16/bits/hash_bytes.h /usr/include/c++/16/bits/ostream.h \
- /usr/include/c++/16/ios /usr/include/c++/16/iosfwd \
- /usr/include/c++/16/bits/stringfwd.h /usr/include/c++/16/bits/postypes.h \
- /usr/include/c++/16/cwchar /usr/include/c++/16/exception \
- /usr/include/c++/16/bits/exception_ptr.h \
- /usr/include/c++/16/bits/cxxabi_init_exception.h \
- /usr/include/c++/16/typeinfo /usr/include/c++/16/bits/nested_exception.h \
- /usr/include/c++/16/bits/char_traits.h \
- /usr/include/c++/16/bits/localefwd.h \
- /usr/include/c++/16/x86_64-pc-linux-gnu/bits/c++locale.h \
- /usr/include/c++/16/clocale /usr/include/locale.h \
- /usr/include/bits/locale.h /usr/include/c++/16/cctype \
- /usr/include/c++/16/bits/ios_base.h /usr/include/c++/16/ext/atomicity.h \
- /usr/include/c++/16/x86_64-pc-linux-gnu/bits/gthr.h \
- /usr/include/c++/16/x86_64-pc-linux-gnu/bits/gthr-default.h \
- /usr/include/pthread.h /usr/include/sched.h /usr/include/bits/sched.h \
- /usr/include/linux/sched/types.h /usr/include/linux/types.h \
- /usr/include/asm/types.h /usr/include/asm-generic/types.h \
- /usr/include/asm-generic/int-ll64.h /usr/include/asm/bitsperlong.h \
- /usr/include/asm-generic/bitsperlong.h /usr/include/linux/posix_types.h \
- /usr/include/linux/stddef.h /usr/include/asm/posix_types.h \
- /usr/include/asm/posix_types_64.h /usr/include/asm-generic/posix_types.h \
- /usr/include/bits/types/struct_sched_param.h /usr/include/bits/cpu-set.h \
- /usr/include/time.h /usr/include/bits/time.h /usr/include/bits/timex.h \
- /usr/include/bits/types/struct_tm.h \
- /usr/include/bits/types/struct_itimerspec.h /usr/include/bits/setjmp.h \
- /usr/include/bits/types/struct___jmp_buf_tag.h \
- /usr/include/c++/16/x86_64-pc-linux-gnu/bits/atomic_word.h \
- /usr/include/sys/single_threaded.h \
- /usr/include/c++/16/bits/locale_classes.h \
- /usr/include/c++/16/bits/functexcept.h /usr/include/c++/16/string \
- /usr/include/c++/16/bits/ostream_insert.h \
- /usr/include/c++/16/bits/cxxabi_forced.h \
- /usr/include/c++/16/bits/range_access.h \
- /usr/include/c++/16/bits/erase_if.h \
- /usr/include/c++/16/bits/basic_string.h /usr/include/c++/16/string_view \
- /usr/include/c++/16/bits/string_view.tcc \
- /usr/include/c++/16/ext/string_conversions.h /usr/include/c++/16/cstdio \
- /usr/include/c++/16/cerrno /usr/include/errno.h \
- /usr/include/bits/errno.h /usr/include/linux/errno.h \
- /usr/include/asm/errno.h /usr/include/asm-generic/errno.h \
- /usr/include/asm-generic/errno-base.h /usr/include/bits/types/error_t.h \
- /usr/include/c++/16/bits/charconv.h \
- /usr/include/c++/16/bits/basic_string.tcc \
- /usr/include/c++/16/bits/memory_resource.h /usr/include/c++/16/cstddef \
- /usr/include/c++/16/bits/uses_allocator_args.h \
- /usr/include/c++/16/bits/locale_classes.tcc \
- /usr/include/c++/16/system_error \
- /usr/include/c++/16/x86_64-pc-linux-gnu/bits/error_constants.h \
- /usr/include/c++/16/stdexcept \
- /usr/include/c++/16/bits/stdexcept_except.h \
- /usr/include/c++/16/streambuf /usr/include/c++/16/bits/streambuf.tcc \
- /usr/include/c++/16/bits/basic_ios.h \
- /usr/include/c++/16/bits/locale_facets.h /usr/include/c++/16/cwctype \
- /usr/include/wctype.h /usr/include/bits/wctype-wchar.h \
- /usr/include/c++/16/x86_64-pc-linux-gnu/bits/ctype_base.h \
- /usr/include/c++/16/bits/streambuf_iterator.h \
- /usr/include/c++/16/x86_64-pc-linux-gnu/bits/ctype_inline.h \
- /usr/include/c++/16/bits/locale_facets.tcc \
- /usr/include/c++/16/bits/basic_ios.tcc \
- /usr/include/c++/16/bits/shared_ptr.h \
- /usr/include/c++/16/bits/shared_ptr_base.h \
- /usr/include/c++/16/bits/allocated_ptr.h \
- /usr/include/c++/16/bits/refwrap.h \
- /usr/include/c++/16/ext/aligned_buffer.h \
- /usr/include/c++/16/ext/concurrence.h \
- /usr/include/c++/16/bits/shared_ptr_atomic.h \
- /usr/include/c++/16/bits/atomic_base.h \
- /usr/include/c++/16/bits/atomic_lockfree_defines.h \
- /usr/include/c++/16/bits/atomic_wait.h \
- /usr/include/c++/16/backward/auto_ptr.h \
- /usr/include/c++/16/bits/ranges_uninitialized.h \
- /usr/include/c++/16/bits/ranges_algobase.h \
- /usr/include/c++/16/pstl/glue_memory_defs.h \
- /usr/include/c++/16/pstl/execution_defs.h \
- /home/sree/Phantom/Anipunch/include/SDL_image.h \
+ /home/sree/Phantom/Anipunch/include/SDL_ttf.h \
  /home/sree/Phantom/Anipunch/include/SDL.h \
  /home/sree/Phantom/Anipunch/include/SDL_main.h \
  /home/sree/Phantom/Anipunch/include/SDL_assert.h \
@@ -351,7 +258,102 @@ CMakeFiles/p.dir/src/api.cpp.o: /home/sree/Phantom/Anipunch/src/api.cpp \
  /home/sree/Phantom/Anipunch/include/SDL_version.h \
  /home/sree/Phantom/Anipunch/include/SDL_locale.h \
  /home/sree/Phantom/Anipunch/include/SDL_misc.h \
+ /usr/include/c++/16/memory /usr/include/c++/16/bits/memoryfwd.h \
+ /usr/include/c++/16/bits/allocator.h \
+ /usr/include/c++/16/x86_64-pc-linux-gnu/bits/c++allocator.h \
+ /usr/include/c++/16/bits/new_allocator.h \
+ /usr/include/c++/16/bits/new_throw.h \
+ /usr/include/c++/16/bits/stl_tempbuf.h \
+ /usr/include/c++/16/bits/stl_uninitialized.h \
+ /usr/include/c++/16/ext/alloc_traits.h \
+ /usr/include/c++/16/bits/alloc_traits.h \
+ /usr/include/c++/16/bits/stl_raw_storage_iter.h \
+ /usr/include/c++/16/bits/align.h \
+ /usr/include/c++/16/bits/uses_allocator.h \
+ /usr/include/c++/16/bits/unique_ptr.h /usr/include/c++/16/tuple \
+ /usr/include/c++/16/bits/invoke.h /usr/include/c++/16/bits/ranges_util.h \
+ /usr/include/c++/16/bits/ranges_base.h \
+ /usr/include/c++/16/initializer_list \
+ /usr/include/c++/16/bits/max_size_type.h /usr/include/c++/16/numbers \
+ /usr/include/c++/16/bits/functional_hash.h \
+ /usr/include/c++/16/bits/hash_bytes.h /usr/include/c++/16/bits/ostream.h \
+ /usr/include/c++/16/ios /usr/include/c++/16/iosfwd \
+ /usr/include/c++/16/bits/stringfwd.h /usr/include/c++/16/bits/postypes.h \
+ /usr/include/c++/16/cwchar /usr/include/c++/16/exception \
+ /usr/include/c++/16/bits/exception_ptr.h \
+ /usr/include/c++/16/bits/cxxabi_init_exception.h \
+ /usr/include/c++/16/typeinfo /usr/include/c++/16/bits/nested_exception.h \
+ /usr/include/c++/16/bits/char_traits.h \
+ /usr/include/c++/16/bits/localefwd.h \
+ /usr/include/c++/16/x86_64-pc-linux-gnu/bits/c++locale.h \
+ /usr/include/c++/16/clocale /usr/include/locale.h \
+ /usr/include/bits/locale.h /usr/include/c++/16/cctype \
+ /usr/include/c++/16/bits/ios_base.h /usr/include/c++/16/ext/atomicity.h \
+ /usr/include/c++/16/x86_64-pc-linux-gnu/bits/gthr.h \
+ /usr/include/c++/16/x86_64-pc-linux-gnu/bits/gthr-default.h \
+ /usr/include/pthread.h /usr/include/sched.h /usr/include/bits/sched.h \
+ /usr/include/linux/sched/types.h /usr/include/linux/types.h \
+ /usr/include/asm/types.h /usr/include/asm-generic/types.h \
+ /usr/include/asm-generic/int-ll64.h /usr/include/asm/bitsperlong.h \
+ /usr/include/asm-generic/bitsperlong.h /usr/include/linux/posix_types.h \
+ /usr/include/linux/stddef.h /usr/include/asm/posix_types.h \
+ /usr/include/asm/posix_types_64.h /usr/include/asm-generic/posix_types.h \
+ /usr/include/bits/types/struct_sched_param.h /usr/include/bits/cpu-set.h \
+ /usr/include/time.h /usr/include/bits/time.h /usr/include/bits/timex.h \
+ /usr/include/bits/types/struct_tm.h \
+ /usr/include/bits/types/struct_itimerspec.h /usr/include/bits/setjmp.h \
+ /usr/include/bits/types/struct___jmp_buf_tag.h \
+ /usr/include/c++/16/x86_64-pc-linux-gnu/bits/atomic_word.h \
+ /usr/include/sys/single_threaded.h \
+ /usr/include/c++/16/bits/locale_classes.h \
+ /usr/include/c++/16/bits/functexcept.h /usr/include/c++/16/string \
+ /usr/include/c++/16/bits/ostream_insert.h \
+ /usr/include/c++/16/bits/cxxabi_forced.h \
+ /usr/include/c++/16/bits/range_access.h \
+ /usr/include/c++/16/bits/erase_if.h \
+ /usr/include/c++/16/bits/basic_string.h /usr/include/c++/16/string_view \
+ /usr/include/c++/16/bits/string_view.tcc \
+ /usr/include/c++/16/ext/string_conversions.h /usr/include/c++/16/cstdio \
+ /usr/include/c++/16/cerrno /usr/include/errno.h \
+ /usr/include/bits/errno.h /usr/include/linux/errno.h \
+ /usr/include/asm/errno.h /usr/include/asm-generic/errno.h \
+ /usr/include/asm-generic/errno-base.h /usr/include/bits/types/error_t.h \
+ /usr/include/c++/16/bits/charconv.h \
+ /usr/include/c++/16/bits/basic_string.tcc \
+ /usr/include/c++/16/bits/memory_resource.h /usr/include/c++/16/cstddef \
+ /usr/include/c++/16/bits/uses_allocator_args.h \
+ /usr/include/c++/16/bits/locale_classes.tcc \
+ /usr/include/c++/16/system_error \
+ /usr/include/c++/16/x86_64-pc-linux-gnu/bits/error_constants.h \
+ /usr/include/c++/16/stdexcept \
+ /usr/include/c++/16/bits/stdexcept_except.h \
+ /usr/include/c++/16/streambuf /usr/include/c++/16/bits/streambuf.tcc \
+ /usr/include/c++/16/bits/basic_ios.h \
+ /usr/include/c++/16/bits/locale_facets.h /usr/include/c++/16/cwctype \
+ /usr/include/wctype.h /usr/include/bits/wctype-wchar.h \
+ /usr/include/c++/16/x86_64-pc-linux-gnu/bits/ctype_base.h \
+ /usr/include/c++/16/bits/streambuf_iterator.h \
+ /usr/include/c++/16/x86_64-pc-linux-gnu/bits/ctype_inline.h \
+ /usr/include/c++/16/bits/locale_facets.tcc \
+ /usr/include/c++/16/bits/basic_ios.tcc \
+ /usr/include/c++/16/bits/shared_ptr.h \
+ /usr/include/c++/16/bits/shared_ptr_base.h \
+ /usr/include/c++/16/bits/allocated_ptr.h \
+ /usr/include/c++/16/bits/refwrap.h \
+ /usr/include/c++/16/ext/aligned_buffer.h \
+ /usr/include/c++/16/ext/concurrence.h \
+ /usr/include/c++/16/bits/shared_ptr_atomic.h \
+ /usr/include/c++/16/bits/atomic_base.h \
+ /usr/include/c++/16/bits/atomic_lockfree_defines.h \
+ /usr/include/c++/16/bits/atomic_wait.h \
+ /usr/include/c++/16/backward/auto_ptr.h \
+ /usr/include/c++/16/bits/ranges_uninitialized.h \
+ /usr/include/c++/16/bits/ranges_algobase.h \
+ /usr/include/c++/16/pstl/glue_memory_defs.h \
+ /usr/include/c++/16/pstl/execution_defs.h \
+ /home/sree/Phantom/Anipunch/include/SDL_image.h \
  /home/sree/Phantom/Anipunch/include/SDL_render.h \
+ /home/sree/Phantom/Anipunch/include/SDL_ttf.h \
  /home/sree/Phantom/Anipunch/include/core.hpp \
  /usr/include/c++/16/iostream /usr/include/c++/16/ostream \
  /usr/include/c++/16/bits/ostream_print.h \

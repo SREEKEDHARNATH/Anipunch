@@ -28,7 +28,7 @@ namespace core{
         if ((Mix_Init(sound_flags) & sound_flags) != sound_flags){
             return {false, Mix_GetError()};
         }
-        getWindow()=SDL_CreateWindow(getTitle(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, getW(), getH(), 0);
+        getWindow()=SDL_CreateWindow(getTitle(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, getW(), getH(), SDL_WINDOW_HIDDEN);
         if (!getWindow()){
             return {false, SDL_GetError()};
         }
@@ -49,6 +49,7 @@ namespace core{
         SDL_Event e;
         bool running=true;
 
+        SDL_ShowWindow(getWindow());
         while (running) {
             while (SDL_PollEvent(&e)) {
                 switch (e.type) {

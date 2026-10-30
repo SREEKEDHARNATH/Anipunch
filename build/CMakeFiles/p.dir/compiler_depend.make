@@ -50,6 +50,7 @@ CMakeFiles/p.dir/src/api.cpp.o: /home/sree/Phantom/Anipunch/src/api.cpp \
   /home/sree/Phantom/Anipunch/include/SDL_thread.h \
   /home/sree/Phantom/Anipunch/include/SDL_timer.h \
   /home/sree/Phantom/Anipunch/include/SDL_touch.h \
+  /home/sree/Phantom/Anipunch/include/SDL_ttf.h \
   /home/sree/Phantom/Anipunch/include/SDL_version.h \
   /home/sree/Phantom/Anipunch/include/SDL_video.h \
   /home/sree/Phantom/Anipunch/include/api.hpp \
@@ -1111,8 +1112,6 @@ p: /home/sree/Phantom/Anipunch/libs/libSDL2.a \
 
 /usr/include/c++/16/bits/stl_relops.h:
 
-/home/sree/Phantom/Anipunch/include/SDL_ttf.h:
-
 /home/sree/Phantom/Anipunch/include/SDL_mixer.h:
 
 /home/sree/Phantom/Anipunch/src/core.cpp:
@@ -1371,11 +1370,11 @@ CMakeFiles/p.dir/src/core.cpp.o:
 
 /usr/include/c++/16/memory:
 
-/usr/include/bits/types/struct_itimerspec.h:
+/usr/include/c++/16/x86_64-pc-linux-gnu/bits/c++allocator.h:
+
+/usr/include/c++/16/math.h:
 
 /usr/include/c++/16/bits/memory_resource.h:
-
-/usr/include/bits/types/mbstate_t.h:
 
 /usr/include/bits/types/locale_t.h:
 
@@ -1440,6 +1439,8 @@ CMakeFiles/p.dir/src/core.cpp.o:
 /usr/include/bits/mathcalls-macros.h:
 
 /usr/include/asm-generic/int-ll64.h:
+
+/usr/include/bits/types/struct_itimerspec.h:
 
 /usr/include/c++/16/bits/ptr_traits.h:
 
@@ -1522,6 +1523,8 @@ CMakeFiles/p.dir/src/core.cpp.o:
 /usr/include/bits/timesize.h:
 
 /usr/include/bits/endian.h:
+
+/usr/include/asm-generic/errno.h:
 
 /home/sree/Phantom/Anipunch/include/SDL_main.h:
 
@@ -1679,6 +1682,10 @@ CMakeFiles/p.dir/src/api.cpp.o:
 
 /usr/include/asm/posix_types.h:
 
+/usr/include/bits/fp-logb.h:
+
+/home/sree/Phantom/Anipunch/include/SDL_thread.h:
+
 /home/sree/Phantom/Anipunch/include/SDL_rwops.h:
 
 /home/sree/Phantom/Anipunch/include/SDL_pixels.h:
@@ -1713,12 +1720,6 @@ CMakeFiles/p.dir/src/api.cpp.o:
 
 /home/sree/Phantom/Anipunch/include/begin_code.h:
 
-/home/sree/Phantom/Anipunch/include/SDL_thread.h:
-
-/usr/include/bits/fp-logb.h:
-
-/usr/include/asm-generic/errno.h:
-
 /home/sree/Phantom/Anipunch/include/SDL_platform.h:
 
 /home/sree/Phantom/Anipunch/include/SDL_scancode.h:
@@ -1729,13 +1730,17 @@ CMakeFiles/p.dir/src/api.cpp.o:
 
 /usr/include/c++/16/bits/basic_ios.tcc:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/16/include/avx512dqintrin.h:
+/usr/include/bits/types/mbstate_t.h:
 
-/usr/include/alloca.h:
+/home/sree/Phantom/Anipunch/include/SDL_ttf.h:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/16/include/avx10_2copyintrin.h:
 
 /home/sree/Phantom/Anipunch/include/SDL_video.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/include/avx512dqintrin.h:
+
+/usr/include/alloca.h:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/16/include/avx10_2satcvtintrin.h:
 
@@ -2032,7 +2037,3 @@ CMakeFiles/p.dir/src/api.cpp.o:
 /usr/lib/gcc/x86_64-pc-linux-gnu/16/include/prfchwintrin.h:
 
 /usr/include/c++/16/istream:
-
-/usr/include/c++/16/x86_64-pc-linux-gnu/bits/c++allocator.h:
-
-/usr/include/c++/16/math.h:
