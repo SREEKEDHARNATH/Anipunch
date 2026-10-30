@@ -4,6 +4,7 @@
 # SOURCES at CMakeLists.txt:29 (file)
 file(GLOB_RECURSE NEW_GLOB LIST_DIRECTORIES false "/home/sree/Phantom/Anipunch/src/*.cpp")
 set(OLD_GLOB
+  "/home/sree/Phantom/Anipunch/src/core.cpp"
   "/home/sree/Phantom/Anipunch/src/main.cpp"
   )
 if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")

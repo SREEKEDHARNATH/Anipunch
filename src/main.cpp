@@ -1,5 +1,5 @@
-#include <iostream>
+#include "core.hpp"
 
 int main(){
-    std::cout << "Hi]n";
+    core::run();
 }
