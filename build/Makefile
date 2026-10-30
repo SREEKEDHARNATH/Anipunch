@@ -130,6 +130,30 @@ p/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/p.dir/build.make CMakeFiles/p.dir/build
 .PHONY : p/fast
 
+src/api.o: src/api.cpp.o
+.PHONY : src/api.o
+
+# target to build an object file
+src/api.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/p.dir/build.make CMakeFiles/p.dir/src/api.cpp.o
+.PHONY : src/api.cpp.o
+
+src/api.i: src/api.cpp.i
+.PHONY : src/api.i
+
+# target to preprocess a source file
+src/api.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/p.dir/build.make CMakeFiles/p.dir/src/api.cpp.i
+.PHONY : src/api.cpp.i
+
+src/api.s: src/api.cpp.s
+.PHONY : src/api.s
+
+# target to generate assembly for a file
+src/api.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/p.dir/build.make CMakeFiles/p.dir/src/api.cpp.s
+.PHONY : src/api.cpp.s
+
 src/core.o: src/core.cpp.o
 .PHONY : src/core.o
 
@@ -187,6 +211,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... p"
+	@echo "... src/api.o"
+	@echo "... src/api.i"
+	@echo "... src/api.s"
 	@echo "... src/core.o"
 	@echo "... src/core.i"
 	@echo "... src/core.s"

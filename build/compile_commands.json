@@ -1,6 +1,12 @@
 [
 {
   "directory": "/home/sree/Phantom/Anipunch/build",
+  "command": "/usr/sbin/c++  -I/home/sree/Phantom/Anipunch/include -std=gnu++20 -o CMakeFiles/p.dir/src/api.cpp.o -c /home/sree/Phantom/Anipunch/src/api.cpp",
+  "file": "/home/sree/Phantom/Anipunch/src/api.cpp",
+  "output": "CMakeFiles/p.dir/src/api.cpp.o"
+},
+{
+  "directory": "/home/sree/Phantom/Anipunch/build",
   "command": "/usr/sbin/c++  -I/home/sree/Phantom/Anipunch/include -std=gnu++20 -o CMakeFiles/p.dir/src/core.cpp.o -c /home/sree/Phantom/Anipunch/src/core.cpp",
   "file": "/home/sree/Phantom/Anipunch/src/core.cpp",
   "output": "CMakeFiles/p.dir/src/core.cpp.o"

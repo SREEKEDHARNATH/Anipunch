@@ -2,12 +2,15 @@ p: \
   /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/Scrt1.o \
   /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/crti.o \
   /usr/lib/gcc/x86_64-pc-linux-gnu/16/crtbeginS.o \
+  CMakeFiles/p.dir/src/api.cpp.o \
   CMakeFiles/p.dir/src/core.cpp.o \
   CMakeFiles/p.dir/src/main.cpp.o \
+  /home/sree/Phantom/Anipunch/libs/libbox2d.a \
   /home/sree/Phantom/Anipunch/libs/libSDL2.a \
   /home/sree/Phantom/Anipunch/libs/libSDL2_image.a \
   /home/sree/Phantom/Anipunch/libs/libfreetype.a \
   /home/sree/Phantom/Anipunch/libs/libSDL2_ttf.a \
+  /home/sree/Phantom/Anipunch/libs/libSDL2_mixer.a \
   /home/sree/Phantom/Anipunch/libs/libSDL2.a \
   /home/sree/Phantom/Anipunch/libs/libfreetype.a \
   /usr/lib/gcc/x86_64-pc-linux-gnu/16/libstdc++.a \
@@ -39,9 +42,13 @@ p: \
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/16/crtbeginS.o:
 
+CMakeFiles/p.dir/src/api.cpp.o:
+
 CMakeFiles/p.dir/src/core.cpp.o:
 
 CMakeFiles/p.dir/src/main.cpp.o:
+
+/home/sree/Phantom/Anipunch/libs/libbox2d.a:
 
 /home/sree/Phantom/Anipunch/libs/libSDL2.a:
 
@@ -50,6 +57,8 @@ CMakeFiles/p.dir/src/main.cpp.o:
 /home/sree/Phantom/Anipunch/libs/libfreetype.a:
 
 /home/sree/Phantom/Anipunch/libs/libSDL2_ttf.a:
+
+/home/sree/Phantom/Anipunch/libs/libSDL2_mixer.a:
 
 /home/sree/Phantom/Anipunch/libs/libSDL2.a:
 

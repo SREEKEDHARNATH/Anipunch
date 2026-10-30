@@ -26,6 +26,16 @@ set_target_properties(SDL2_TTF PROPERTIES
     INTERFACE_LINK_LIBRARIES "FREETYPE;SDL2"
 )
 
+add_library(SDL2_MIXER STATIC IMPORTED)
+set_target_properties(SDL2_MIXER PROPERTIES
+    IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/libs/libSDL2_mixer.a"
+)
+
+add_library(box2d STATIC IMPORTED)
+set_target_properties(box2d PROPERTIES
+    IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/libs/libbox2d.a"
+)
+
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 file(CREATE_LINK ${CMAKE_CURRENT_SOURCE_DIR}/assets ${CMAKE_CURRENT_BINARY_DIR}/assets SYMBOLIC)
 
@@ -37,8 +47,10 @@ target_include_directories(p PRIVATE
 target_link_options(p PRIVATE -static-libstdc++ -static-libgcc)
 target_link_libraries(p PRIVATE
     m
+    box2d
     SDL2
     SDL2_IMAGE
     FREETYPE
     SDL2_TTF
+    SDL2_MIXER
 )

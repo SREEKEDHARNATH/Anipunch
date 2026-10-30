@@ -5,13 +5,28 @@
 #include "SDL_render.h"
 #include "SDL_timer.h"
 #include "SDL_video.h"
+#include "SDL_image.h"
+#include "SDL_ttf.h"
+#include "SDL_mixer.h"
+#include "api.hpp"
 #include <iostream>
 #include <utility>
 
 namespace core{
     std::pair<bool, const char*> init() {
+        int img_flags = IMG_INIT_PNG;
+        int sound_flags = MIX_INIT_MP3;
         if (SDL_Init(SDL_INIT_EVERYTHING)){
             return {false, SDL_GetError()};
+        }
+        if ((IMG_Init(img_flags) & img_flags) != img_flags){
+            return {false, IMG_GetError()};
+        }
+        if (TTF_Init()){
+            return {false, IMG_GetError()};
+        }
+        if ((Mix_Init(sound_flags) & sound_flags) != sound_flags){
+            return {false, Mix_GetError()};
         }
         getWindow()=SDL_CreateWindow(getTitle(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, getW(), getH(), 0);
         if (!getWindow()){
@@ -55,6 +70,9 @@ namespace core{
         if (getWindow()){
             SDL_DestroyWindow(getWindow());
         }
+        Mix_Quit();
+        TTF_Quit();
+        IMG_Quit();
         SDL_Quit();
     }
     
