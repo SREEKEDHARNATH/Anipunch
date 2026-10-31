@@ -41,6 +41,24 @@ struct ki{
     }
 };
 
+struct wave{
+    core::api::image img;
+    float r;
+    wave(b2Vec2 pos) : img("assets/images/energy-ball-tmp.jpg"){
+        r = std::atan2(core::mouslistener::getY()-(pos.y*32), core::mouslistener::getX()-(pos.x*32));
+        img.dstrect.x=pos.x*32;
+        img.dstrect.y=pos.y*32;
+        img.dstrect.w=300;
+        img.dstrect.h=50;
+    }
+    void update(){
+        SDL_Point point={0,0};
+        SDL_RenderCopyEx(core::getRenderer(), img.get(), NULL, &img.dstrect, r*180/B2_PI, &point, SDL_FLIP_NONE);
+        //img.draw();
+    }
+};
+
+
 namespace core{
     std::pair<bool, const char*> init() {
         int img_flags = IMG_INIT_PNG;
@@ -101,8 +119,11 @@ namespace core{
         auto lastjmp=SDL_GetTicks64();
 
         std::vector<ki> energy;
+        std::vector<wave> waves;
+        std::vector<Uint64> wavetime;
 
         SDL_Rect wrldrect={0,0,getW(),getH()};
+        auto lastwave=SDL_GetTicks64();
         SDL_ShowWindow(getWindow());
         while (running) {
             while (SDL_PollEvent(&e)) {
@@ -183,6 +204,13 @@ namespace core{
                 if (keylistener::isPressed(SDLK_1)){
                     energy.emplace_back(world, b2Body_GetPosition(body.get()));
                 }
+                if (keylistener::isPressed(SDLK_2)){
+                    if (SDL_GetTicks64() > (lastwave+5000)){
+                        waves.emplace_back(b2Body_GetPosition(body.get()));
+                        wavetime.push_back(SDL_GetTicks64());
+                        lastwave = SDL_GetTicks64();
+                    }
+                }
             }
             SDL_RenderClear(getRenderer());
             auto pos=b2Body_GetPosition(body.get());
@@ -196,6 +224,14 @@ namespace core{
                 }
                 else {
                     energy.erase(energy.begin()+i);
+                    i--;
+                }
+            }
+            for (int i=0;i<waves.size();i++){
+                waves[i].update();
+                if (SDL_GetTicks64() > wavetime[i]+5000){
+                    wavetime.erase(wavetime.begin()+i);
+                    waves.erase(waves.begin()+i);
                     i--;
                 }
             }
