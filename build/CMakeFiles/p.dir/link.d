@@ -6,6 +6,7 @@ p: \
   CMakeFiles/p.dir/src/core.cpp.o \
   CMakeFiles/p.dir/src/listeners.cpp.o \
   CMakeFiles/p.dir/src/main.cpp.o \
+  CMakeFiles/p.dir/src/physics.cpp.o \
   /home/sree/Phantom/Anipunch/libs/libbox2d.a \
   /home/sree/Phantom/Anipunch/libs/libSDL2.a \
   /home/sree/Phantom/Anipunch/libs/libSDL2_image.a \
@@ -50,6 +51,8 @@ CMakeFiles/p.dir/src/core.cpp.o:
 CMakeFiles/p.dir/src/listeners.cpp.o:
 
 CMakeFiles/p.dir/src/main.cpp.o:
+
+CMakeFiles/p.dir/src/physics.cpp.o:
 
 /home/sree/Phantom/Anipunch/libs/libbox2d.a:
 

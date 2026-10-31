@@ -12,6 +12,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/sree/Phantom/Anipunch/src/core.cpp" "CMakeFiles/p.dir/src/core.cpp.o" "gcc" "CMakeFiles/p.dir/src/core.cpp.o.d"
   "/home/sree/Phantom/Anipunch/src/listeners.cpp" "CMakeFiles/p.dir/src/listeners.cpp.o" "gcc" "CMakeFiles/p.dir/src/listeners.cpp.o.d"
   "/home/sree/Phantom/Anipunch/src/main.cpp" "CMakeFiles/p.dir/src/main.cpp.o" "gcc" "CMakeFiles/p.dir/src/main.cpp.o.d"
+  "/home/sree/Phantom/Anipunch/src/physics.cpp" "CMakeFiles/p.dir/src/physics.cpp.o" "gcc" "CMakeFiles/p.dir/src/physics.cpp.o.d"
   "" "p" "gcc" "CMakeFiles/p.dir/link.d"
   )
 

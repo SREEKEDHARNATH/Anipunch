@@ -11,7 +11,10 @@
 #include "SDL_mixer.h"
 #include <iostream>
 #include <utility>
+#include "box2d/box2d.h"
+#include "box2d/types.h"
 #include "listeners.hpp"
+#include "physics.hpp"
 
 namespace core{
     std::pair<bool, const char*> init() {
@@ -51,6 +54,10 @@ namespace core{
         SDL_Event e;
         bool running=true;
 
+        physics::world world;
+        physics::body body(world, {0,0},b2_dynamicBody);
+        body.attachBox(1, 1);
+
         SDL_ShowWindow(getWindow());
         while (running) {
             while (SDL_PollEvent(&e)) {
@@ -79,7 +86,8 @@ namespace core{
                 running=false;
             }
             SDL_RenderClear(getRenderer());
-            std::cout << mouslistener::getScrlY() << "\n";
+            world.simulate();
+            std::cout << (b2Body_GetPosition(body.get()).y)*32 << "\n";
             SDL_RenderPresent(getRenderer());
             
             keylistener::update();

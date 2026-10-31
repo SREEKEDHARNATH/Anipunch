@@ -8,6 +8,7 @@ set(OLD_GLOB
   "/home/sree/Phantom/Anipunch/src/core.cpp"
   "/home/sree/Phantom/Anipunch/src/listeners.cpp"
   "/home/sree/Phantom/Anipunch/src/main.cpp"
+  "/home/sree/Phantom/Anipunch/src/physics.cpp"
   )
 if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
   message("-- GLOB mismatch!")

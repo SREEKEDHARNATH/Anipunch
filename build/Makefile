@@ -226,6 +226,30 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/p.dir/build.make CMakeFiles/p.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/physics.o: src/physics.cpp.o
+.PHONY : src/physics.o
+
+# target to build an object file
+src/physics.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/p.dir/build.make CMakeFiles/p.dir/src/physics.cpp.o
+.PHONY : src/physics.cpp.o
+
+src/physics.i: src/physics.cpp.i
+.PHONY : src/physics.i
+
+# target to preprocess a source file
+src/physics.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/p.dir/build.make CMakeFiles/p.dir/src/physics.cpp.i
+.PHONY : src/physics.cpp.i
+
+src/physics.s: src/physics.cpp.s
+.PHONY : src/physics.s
+
+# target to generate assembly for a file
+src/physics.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/p.dir/build.make CMakeFiles/p.dir/src/physics.cpp.s
+.PHONY : src/physics.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -247,6 +271,9 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/physics.o"
+	@echo "... src/physics.i"
+	@echo "... src/physics.s"
 .PHONY : help
 
 
