@@ -6,6 +6,7 @@ file(GLOB_RECURSE NEW_GLOB LIST_DIRECTORIES false "/home/sree/Phantom/Anipunch/s
 set(OLD_GLOB
   "/home/sree/Phantom/Anipunch/src/api.cpp"
   "/home/sree/Phantom/Anipunch/src/core.cpp"
+  "/home/sree/Phantom/Anipunch/src/listeners.cpp"
   "/home/sree/Phantom/Anipunch/src/main.cpp"
   )
 if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")

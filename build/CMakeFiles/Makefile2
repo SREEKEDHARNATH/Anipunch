@@ -85,12 +85,12 @@ clean: CMakeFiles/p.dir/clean
 CMakeFiles/p.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/p.dir/build.make CMakeFiles/p.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/p.dir/build.make CMakeFiles/p.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/sree/Phantom/Anipunch/build/CMakeFiles --progress-num=1,2,3,4 "Built target p"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/sree/Phantom/Anipunch/build/CMakeFiles --progress-num=1,2,3,4,5 "Built target p"
 .PHONY : CMakeFiles/p.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/p.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/sree/Phantom/Anipunch/build/CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/sree/Phantom/Anipunch/build/CMakeFiles 5
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/p.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/sree/Phantom/Anipunch/build/CMakeFiles 0
 .PHONY : CMakeFiles/p.dir/rule
@@ -102,7 +102,7 @@ p : CMakeFiles/p.dir/rule
 # codegen rule for target.
 CMakeFiles/p.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/p.dir/build.make CMakeFiles/p.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/sree/Phantom/Anipunch/build/CMakeFiles --progress-num=1,2,3,4 "Finished codegen for target p"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/sree/Phantom/Anipunch/build/CMakeFiles --progress-num=1,2,3,4,5 "Finished codegen for target p"
 .PHONY : CMakeFiles/p.dir/codegen
 
 # clean rule for target.
