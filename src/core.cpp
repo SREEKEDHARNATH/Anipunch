@@ -12,6 +12,7 @@
 #include "SDL_mixer.h"
 #include <cmath>
 #include <iostream>
+#include <string>
 #include <utility>
 #include <vector>
 #include "api.hpp"
@@ -25,7 +26,7 @@
 struct ki{
     physics::body body;
     core::api::image img;
-    ki(physics::world& w,b2Vec2 pos) : body(w,pos,b2_kinematicBody), img("assets/images/energy-ball-tmp.jpg"){
+    ki(physics::world& w,b2Vec2 pos) : body(w,pos,b2_kinematicBody), img("assets/images/energy-ball.png"){
         auto r = std::atan2(core::mouslistener::getY()-(pos.y*32), core::mouslistener::getX()-(pos.x*32));
         b2Rot rot=b2MakeRot(r);
         b2Body_SetTransform(body.get(), b2Body_GetPosition(body.get()), rot);
@@ -44,7 +45,7 @@ struct ki{
 struct wave{
     core::api::image img;
     float r;
-    wave(b2Vec2 pos) : img("assets/images/energy-ball-tmp.jpg"){
+    wave(b2Vec2 pos) : img("assets/images/energy-wave.png"){
         r = std::atan2(core::mouslistener::getY()-(pos.y*32), core::mouslistener::getX()-(pos.x*32));
         img.dstrect.x=pos.x*32;
         img.dstrect.y=pos.y*32;
@@ -54,7 +55,6 @@ struct wave{
     void update(){
         SDL_Point point={0,0};
         SDL_RenderCopyEx(core::getRenderer(), img.get(), NULL, &img.dstrect, r*180/B2_PI, &point, SDL_FLIP_NONE);
-        //img.draw();
     }
 };
 
@@ -98,7 +98,7 @@ namespace core{
         bool running=true;
 
         physics::world world;
-        physics::body body(world, {0,500/32.0f},b2_dynamicBody);
+        physics::body body(world, {32,500/32.0f},b2_dynamicBody);
         body.attachBox(1, 3);
 
         api::image player("assets/images/player-tmp.jpg");
@@ -115,6 +115,7 @@ namespace core{
         float base_speed_x=10,base_speed_y=-20;
         constexpr int maxjmpc=2;
         int jump_counter=maxjmpc;
+
         auto initial=SDL_GetTicks64();
         auto lastjmp=SDL_GetTicks64();
 
@@ -123,7 +124,27 @@ namespace core{
         std::vector<Uint64> wavetime;
 
         SDL_Rect wrldrect={0,0,getW(),getH()};
-        auto lastwave=SDL_GetTicks64();
+        auto lastwave=0;
+
+        api::font font("assets/fonts/font.ttf", 24);
+
+        api::text energybarinfo(font, "Energy:- ");
+        api::text energybar(font, "100");
+        energybar.img.dstrect.x=energybarinfo.img.dstrect.w;
+
+        api::text staminabarinfo(font, "Stamina:- ");
+        api::text staminabar(font, "100");
+
+        staminabar.img.dstrect.y=energybar.img.dstrect.h+10;
+        staminabarinfo.img.dstrect.y=energybar.img.dstrect.h+10;
+        staminabar.img.dstrect.x=staminabarinfo.img.dstrect.w;
+
+        api::text jumps(font, "2/2");
+        jumps.img.dstrect.y=staminabar.img.dstrect.h+50;
+
+        float curenergy=100;
+        float stamina=100;
+
         SDL_ShowWindow(getWindow());
         while (running) {
             while (SDL_PollEvent(&e)) {
@@ -162,28 +183,45 @@ namespace core{
             }
             if (keylistener::isDown(SDLK_LCTRL)){
                 base_speed_y=-10;
-                if (keylistener::isPressed(SDLK_RIGHT)){
-                    b2Body_ApplyLinearImpulseToCenter(body.get(), {base_speed_x,0},false);
-                }
-                if (keylistener::isPressed(SDLK_LEFT)){
-                    b2Body_ApplyLinearImpulseToCenter(body.get(), {-1*base_speed_x,0},false);
+                if (stamina>15){
+                    if (keylistener::isPressed(SDLK_d)){
+                        b2Body_ApplyLinearImpulseToCenter(body.get(), {base_speed_x,0},false);
+                        stamina-=15;
+                    }
+                    if (keylistener::isPressed(SDLK_a)){
+                        b2Body_ApplyLinearImpulseToCenter(body.get(), {-1*base_speed_x,0},false);
+                        stamina-=15;
+                    }
                 }
             }
             else {
-                if (keylistener::isDown(SDLK_RIGHT)){
-                    b2Body_ApplyForceToCenter(body.get(), {base_speed_x,0},false);
+                if (keylistener::isDown(SDLK_d)){
+                    if (stamina > 0.2f){
+                        b2Body_ApplyForceToCenter(body.get(), {base_speed_x,0},false);
+                        if (base_speed_x>10){
+                            stamina-=0.2f;
+                        }
+                    }
                 }
-                if (keylistener::isDown(SDLK_LEFT)){
-                    b2Body_ApplyForceToCenter(body.get(), {-1*base_speed_x,0},false);
+                if (keylistener::isDown(SDLK_a)){
+                    if (stamina > 0.2f){
+                        b2Body_ApplyForceToCenter(body.get(), {-1*base_speed_x,0},false);
+                        if (base_speed_x>10){
+                            stamina-=0.2f;
+                        }
+                    }
                 }
                 base_speed_y=-20;
             }
-            if (keylistener::isPressed(SDLK_UP)){
+            if (keylistener::isPressed(SDLK_w)){
                 auto vel = b2Body_GetLinearVelocity(body.get());
-                if (jump_counter>0 && vel.y < 0.05f){
+                if (jump_counter>0 && vel.y < 0.05f && stamina > 10){
                     b2Body_ApplyLinearImpulseToCenter(body.get(), {0,base_speed_y},false);
                     jump_counter--;
                     lastjmp=SDL_GetTicks64();
+                    stamina-=10;
+                    auto st(std::to_string(jump_counter) + "/2");
+                    jumps.setText(st.c_str());
                 }
             }
             else {
@@ -191,26 +229,47 @@ namespace core{
                     if (SDL_GetTicks64() > (lastjmp+1000)){
                         jump_counter++;
                         lastjmp=SDL_GetTicks64();
+                        jumps.setText("1/2");
                     }
                 }
                 else if (jump_counter == 1){
                     if (SDL_GetTicks64() > (lastjmp+4000)){
                         jump_counter++;
                         lastjmp=SDL_GetTicks64();
+                        jumps.setText("2/2");
                     }
                 }
             }
             if (keylistener::isDown(SDLK_e)){
                 if (keylistener::isPressed(SDLK_1)){
-                    energy.emplace_back(world, b2Body_GetPosition(body.get()));
+                    if (curenergy > 4){
+                        energy.emplace_back(world, b2Body_GetPosition(body.get()));
+                        curenergy-=5;
+                    }
                 }
                 if (keylistener::isPressed(SDLK_2)){
                     if (SDL_GetTicks64() > (lastwave+5000)){
-                        waves.emplace_back(b2Body_GetPosition(body.get()));
-                        wavetime.push_back(SDL_GetTicks64());
-                        lastwave = SDL_GetTicks64();
+                        if (curenergy > 29){
+                            waves.emplace_back(b2Body_GetPosition(body.get()));
+                            wavetime.push_back(SDL_GetTicks64());
+                            lastwave = SDL_GetTicks64();
+                            curenergy-=30;
+                        }
                     }
                 }
+            }
+            if (curenergy<100.0f){
+                curenergy+=0.05f;
+            }
+            if (stamina<100.0f){
+                stamina+=0.1f;
+            }
+
+            if ((int)(curenergy) != std::stoi(energybar.getText())){
+                energybar.setText(std::to_string((int)(curenergy)).c_str());
+            }
+            if ((int)(stamina) != std::stoi(staminabar.getText())){
+                staminabar.setText(std::to_string((int)(stamina)).c_str());
             }
             SDL_RenderClear(getRenderer());
             auto pos=b2Body_GetPosition(body.get());
@@ -229,12 +288,21 @@ namespace core{
             }
             for (int i=0;i<waves.size();i++){
                 waves[i].update();
-                if (SDL_GetTicks64() > wavetime[i]+5000){
+                if (SDL_GetTicks64() > wavetime[i]+4000){
                     wavetime.erase(wavetime.begin()+i);
                     waves.erase(waves.begin()+i);
                     i--;
                 }
             }
+            if (stamina < 1){
+                std::cout << "You are out of breath bye\n";
+                running=false;
+            }
+            jumps.draw();
+            staminabarinfo.draw();
+            staminabar.draw();
+            energybarinfo.draw();
+            energybar.draw();
             SDL_RenderPresent(getRenderer());
             
             keylistener::update();
