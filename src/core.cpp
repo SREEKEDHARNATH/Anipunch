@@ -3,18 +3,43 @@
 #include "SDL_error.h"
 #include "SDL_events.h"
 #include "SDL_keycode.h"
+#include "SDL_rect.h"
 #include "SDL_render.h"
 #include "SDL_timer.h"
 #include "SDL_video.h"
 #include "SDL_image.h"
 #include "SDL_ttf.h"
 #include "SDL_mixer.h"
+#include <cmath>
 #include <iostream>
 #include <utility>
+#include <vector>
+#include "api.hpp"
 #include "box2d/box2d.h"
+#include "box2d/math_functions.h"
+#include "box2d/math_types.h"
 #include "box2d/types.h"
 #include "listeners.hpp"
 #include "physics.hpp"
+
+struct ki{
+    physics::body body;
+    core::api::image img;
+    ki(physics::world& w,b2Vec2 pos) : body(w,pos,b2_kinematicBody), img("assets/images/energy-ball-tmp.jpg"){
+        auto r = std::atan2(core::mouslistener::getY()-(pos.y*32), core::mouslistener::getX()-(pos.x*32));
+        b2Rot rot=b2MakeRot(r);
+        b2Body_SetTransform(body.get(), b2Body_GetPosition(body.get()), rot);
+        auto f=b2Rot_GetXAxis(rot);
+        int mg=20;
+        b2Body_SetLinearVelocity(body.get(), {mg*f.x,mg*f.y});
+    }
+    void update(){
+        auto pos=b2Body_GetPosition(body.get());
+        img.dstrect.x=pos.x*32;
+        img.dstrect.y=pos.y*32;
+        img.draw();
+    }
+};
 
 namespace core{
     std::pair<bool, const char*> init() {
@@ -55,9 +80,29 @@ namespace core{
         bool running=true;
 
         physics::world world;
-        physics::body body(world, {0,0},b2_dynamicBody);
-        body.attachBox(1, 1);
+        physics::body body(world, {0,500/32.0f},b2_dynamicBody);
+        body.attachBox(1, 3);
 
+        api::image player("assets/images/player-tmp.jpg");
+        player.dstrect.h*=3;
+
+        api::image ground("assets/images/ground-tmp.jpg");;
+        ground.dstrect.y=getH()-120;
+        ground.dstrect.w=getW();
+        ground.dstrect.h=120;
+        
+        physics::body bodygrd(world, {getW()/64.0f,(ground.dstrect.y+10)/32.0f},b2_staticBody);
+        bodygrd.attachBox(ground.dstrect.w/32.0f, ground.dstrect.h/32.0f);;
+
+        float base_speed_x=10,base_speed_y=-20;
+        constexpr int maxjmpc=2;
+        int jump_counter=maxjmpc;
+        auto initial=SDL_GetTicks64();
+        auto lastjmp=SDL_GetTicks64();
+
+        std::vector<ki> energy;
+
+        SDL_Rect wrldrect={0,0,getW(),getH()};
         SDL_ShowWindow(getWindow());
         while (running) {
             while (SDL_PollEvent(&e)) {
@@ -77,17 +122,83 @@ namespace core{
                         mouslistener::reg(e.button);
                         break;
                     case SDL_MOUSEWHEEL:
-                        mouslistener::reg(e.wheel);
-                        break;
+                    mouslistener::reg(e.wheel);
+                    break;
                     
                 }
             }
             if (keylistener::isPressed(SDLK_ESCAPE)){
                 running=false;
             }
-            SDL_RenderClear(getRenderer());
             world.simulate();
-            std::cout << (b2Body_GetPosition(body.get()).y)*32 << "\n";
+            if (keylistener::isDown(SDLK_LSHIFT)){
+                base_speed_x=20;
+                base_speed_y=-15;
+            }
+            else {
+                base_speed_x=10;
+                base_speed_y=-20;
+            }
+            if (keylistener::isDown(SDLK_LCTRL)){
+                base_speed_y=-10;
+                if (keylistener::isPressed(SDLK_RIGHT)){
+                    b2Body_ApplyLinearImpulseToCenter(body.get(), {base_speed_x,0},false);
+                }
+                if (keylistener::isPressed(SDLK_LEFT)){
+                    b2Body_ApplyLinearImpulseToCenter(body.get(), {-1*base_speed_x,0},false);
+                }
+            }
+            else {
+                if (keylistener::isDown(SDLK_RIGHT)){
+                    b2Body_ApplyForceToCenter(body.get(), {base_speed_x,0},false);
+                }
+                if (keylistener::isDown(SDLK_LEFT)){
+                    b2Body_ApplyForceToCenter(body.get(), {-1*base_speed_x,0},false);
+                }
+                base_speed_y=-20;
+            }
+            if (keylistener::isPressed(SDLK_UP)){
+                auto vel = b2Body_GetLinearVelocity(body.get());
+                if (jump_counter>0 && vel.y < 0.05f){
+                    b2Body_ApplyLinearImpulseToCenter(body.get(), {0,base_speed_y},false);
+                    jump_counter--;
+                    lastjmp=SDL_GetTicks64();
+                }
+            }
+            else {
+                if (jump_counter == 0){
+                    if (SDL_GetTicks64() > (lastjmp+1000)){
+                        jump_counter++;
+                        lastjmp=SDL_GetTicks64();
+                    }
+                }
+                else if (jump_counter == 1){
+                    if (SDL_GetTicks64() > (lastjmp+4000)){
+                        jump_counter++;
+                        lastjmp=SDL_GetTicks64();
+                    }
+                }
+            }
+            if (keylistener::isDown(SDLK_e)){
+                if (keylistener::isPressed(SDLK_1)){
+                    energy.emplace_back(world, b2Body_GetPosition(body.get()));
+                }
+            }
+            SDL_RenderClear(getRenderer());
+            auto pos=b2Body_GetPosition(body.get());
+            player.dstrect.x=pos.x*32;
+            player.dstrect.y=pos.y*32;
+            player.draw();
+            ground.draw();
+            for (int i=0;i<energy.size();i++){
+                if (SDL_HasIntersection(&energy[i].img.dstrect, &wrldrect)){
+                    energy[i].update();
+                }
+                else {
+                    energy.erase(energy.begin()+i);
+                    i--;
+                }
+            }
             SDL_RenderPresent(getRenderer());
             
             keylistener::update();
