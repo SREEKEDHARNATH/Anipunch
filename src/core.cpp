@@ -1,5 +1,6 @@
 #include "core.hpp"
 #include "SDL.h"
+#include "SDL_audio.h"
 #include "SDL_error.h"
 #include "SDL_events.h"
 #include "SDL_keycode.h"
@@ -33,6 +34,7 @@ struct ki{
         auto f=b2Rot_GetXAxis(rot);
         int mg=20;
         b2Body_SetLinearVelocity(body.get(), {mg*f.x,mg*f.y});
+        body.attachBox(img.dstrect.w/32.0f, img.dstrect.h/32.0f);
     }
     void update(){
         auto pos=b2Body_GetPosition(body.get());
@@ -43,21 +45,30 @@ struct ki{
 };
 
 struct wave{
+    physics::body body;
     core::api::image img;
     float r;
-    wave(b2Vec2 pos) : img("assets/images/energy-wave.png"){
+    wave(physics::world& w,b2Vec2 pos) : body(w,pos,b2_staticBody),img("assets/images/energy-wave.png"){
         r = std::atan2(core::mouslistener::getY()-(pos.y*32), core::mouslistener::getX()-(pos.x*32));
+        b2Rot rot=b2MakeRot(r);
+        b2Body_SetTransform(body.get(), b2Body_GetPosition(body.get()), rot);
         img.dstrect.x=pos.x*32;
         img.dstrect.y=pos.y*32;
         img.dstrect.w=300;
         img.dstrect.h=50;
+        body.attachBox(img.dstrect.w/32.0f, img.dstrect.h/32.0f, true);
     }
     void update(){
         SDL_Point point={0,0};
         SDL_RenderCopyEx(core::getRenderer(), img.get(), NULL, &img.dstrect, r*180/B2_PI, &point, SDL_FLIP_NONE);
     }
 };
-
+bool aresame(b2BodyId a, b2BodyId b){
+    if (b2Body_IsValid(a) && b2Body_IsValid(b)){
+        return B2_ID_EQUALS(a,b);
+    }
+    return false;
+}
 
 namespace core{
     std::pair<bool, const char*> init() {
@@ -98,11 +109,17 @@ namespace core{
         bool running=true;
 
         physics::world world;
-        physics::body body(world, {32,500/32.0f},b2_dynamicBody);
+        physics::body body(world, {1,500/32.0f},b2_dynamicBody);
         body.attachBox(1, 3);
 
         api::image player("assets/images/player-tmp.jpg");
         player.dstrect.h*=3;
+
+        physics::body enemybody(world, {32,500/32.0f},b2_dynamicBody);
+        enemybody.attachBox(1, 3);
+
+        api::image enemy("assets/images/player-tmp.jpg");
+        enemy.dstrect.h*=3;
 
         api::image ground("assets/images/ground-tmp.jpg");;
         ground.dstrect.y=getH()-120;
@@ -173,6 +190,37 @@ namespace core{
                 running=false;
             }
             world.simulate();
+            auto c = b2World_GetContactEvents(world.get());
+            for (int i=0;i<c.beginCount;i++){
+                auto ba = b2Shape_GetBody(c.beginEvents[i].shapeIdA);
+                auto bb = b2Shape_GetBody(c.beginEvents[i].shapeIdB);
+                float mg=0.1;
+                if (aresame(enemybody.get(), ba)){
+                    for (int j=0;j<energy.size();j++){
+                        if (aresame(bb, energy[j].body.get())){
+                            energy.erase(energy.begin()+j);
+                            j--;
+                            auto v = b2Body_GetLinearVelocity(enemybody.get());
+                            v.x*=mg;
+                            v.y*=mg;
+                            b2Body_SetLinearVelocity(enemybody.get(), v);
+                        }
+                    }
+                }
+                else if (aresame(enemybody.get(), bb)){
+                    for (int j=0;j<energy.size();j++){
+                        if (aresame(ba, energy[j].body.get())){
+                            energy.erase(energy.begin()+j);
+                            j--;
+                            auto v = b2Body_GetLinearVelocity(enemybody.get());
+                            v.x*=mg;
+                            v.y*=mg;
+                            b2Body_SetLinearVelocity(enemybody.get(), v);
+                        }
+                    }
+                }
+                
+            }
             if (keylistener::isDown(SDLK_LSHIFT)){
                 base_speed_x=20;
                 base_speed_y=-15;
@@ -247,19 +295,19 @@ namespace core{
                         curenergy-=5;
                     }
                 }
-                if (keylistener::isPressed(SDLK_2)){
+                else if (keylistener::isPressed(SDLK_2)){
                     if (SDL_GetTicks64() > (lastwave+5000)){
                         if (curenergy > 29){
-                            waves.emplace_back(b2Body_GetPosition(body.get()));
+                            waves.emplace_back(world,b2Body_GetPosition(body.get()));
                             wavetime.push_back(SDL_GetTicks64());
                             lastwave = SDL_GetTicks64();
                             curenergy-=30;
                         }
                     }
                 }
-            }
-            if (curenergy<100.0f){
-                curenergy+=0.05f;
+                else if (curenergy<100.0f){
+                    curenergy+=0.05f;
+                }
             }
             if (stamina<100.0f){
                 stamina+=0.1f;
@@ -272,9 +320,17 @@ namespace core{
                 staminabar.setText(std::to_string((int)(stamina)).c_str());
             }
             SDL_RenderClear(getRenderer());
-            auto pos=b2Body_GetPosition(body.get());
-            player.dstrect.x=pos.x*32;
-            player.dstrect.y=pos.y*32;
+            {
+                auto pos=b2Body_GetPosition(body.get());
+                player.dstrect.x=pos.x*32;
+                player.dstrect.y=pos.y*32;
+            }
+            {
+                auto pos=b2Body_GetPosition(enemybody.get());
+                enemy.dstrect.x=pos.x*32;
+                enemy.dstrect.y=pos.y*32;
+            }
+            enemy.draw();
             player.draw();
             ground.draw();
             for (int i=0;i<energy.size();i++){

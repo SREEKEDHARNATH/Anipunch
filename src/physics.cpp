@@ -61,13 +61,14 @@ namespace physics {
         *id=i;
         ptr.reset(id, delB);
     }
-    void body::attachBox(float w, float h){
+    void body::attachBox(float w, float h, bool sensor){
         if (b2Body_IsValid(get())){
             b2Polygon poly=b2MakeBox(w/2, h/2);
             b2ShapeDef def=b2DefaultShapeDef();
             def.density=1;
             def.enableContactEvents=true;
             def.material.friction=0;
+            def.isSensor=sensor;
             b2ShapeId sh=b2CreatePolygonShape(get(), &def, &poly);
             if (!b2Shape_IsValid(sh)){
                 std::cerr << "Shape Creation failed\n";

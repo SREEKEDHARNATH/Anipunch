@@ -15,7 +15,7 @@ namespace physics {
         std::shared_ptr<b2BodyId> ptr;
         public:
             body(world& w, b2Vec2 pos, b2BodyType type);
-            void attachBox(float w, float h);
+            void attachBox(float w, float h, bool sensor=false);
             b2BodyId get();
     };
 }
