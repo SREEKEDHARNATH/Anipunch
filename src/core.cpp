@@ -1,11 +1,12 @@
 #include "core.hpp"
 #include "SDL.h"
-#include "SDL_audio.h"
 #include "SDL_error.h"
 #include "SDL_events.h"
 #include "SDL_keycode.h"
+#include "SDL_pixels.h"
 #include "SDL_rect.h"
 #include "SDL_render.h"
+#include "SDL_surface.h"
 #include "SDL_timer.h"
 #include "SDL_video.h"
 #include "SDL_image.h"
@@ -27,14 +28,15 @@
 struct ki{
     physics::body body;
     core::api::image img;
+    b2Rot rot;
     ki(physics::world& w,b2Vec2 pos) : body(w,pos,b2_kinematicBody), img("assets/images/energy-ball.png"){
         auto r = std::atan2(core::mouslistener::getY()-(pos.y*32), core::mouslistener::getX()-(pos.x*32));
-        b2Rot rot=b2MakeRot(r);
+        rot=b2MakeRot(r);
         b2Body_SetTransform(body.get(), b2Body_GetPosition(body.get()), rot);
         auto f=b2Rot_GetXAxis(rot);
         int mg=20;
         b2Body_SetLinearVelocity(body.get(), {mg*f.x,mg*f.y});
-        body.attachBox(img.dstrect.w/32.0f, img.dstrect.h/32.0f);
+        body.attachBox(img.dstrect.w/32.0f, img.dstrect.h/32.0f, true);
     }
     void update(){
         auto pos=b2Body_GetPosition(body.get());
@@ -69,158 +71,97 @@ bool aresame(b2BodyId a, b2BodyId b){
     }
     return false;
 }
-
-namespace core{
-    std::pair<bool, const char*> init() {
-        int img_flags = IMG_INIT_PNG;
-        int sound_flags = MIX_INIT_MP3;
-        if (SDL_Init(SDL_INIT_EVERYTHING)){
-            return {false, SDL_GetError()};
-        }
-        if ((IMG_Init(img_flags) & img_flags) != img_flags){
-            return {false, IMG_GetError()};
-        }
-        if (TTF_Init()){
-            return {false, IMG_GetError()};
-        }
-        if ((Mix_Init(sound_flags) & sound_flags) != sound_flags){
-            return {false, Mix_GetError()};
-        }
-        Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024);
-        getWindow()=SDL_CreateWindow(getTitle(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, getW(), getH(), SDL_WINDOW_HIDDEN);
-        if (!getWindow()){
-            return {false, SDL_GetError()};
-        }
-        getRenderer()=SDL_CreateRenderer(getWindow(),-1,0);
-        if (!getRenderer()){
-            return {false, SDL_GetError()};
-        }
-        return {true, "Great"};
+SDL_Texture* getRgb(Uint8 r, Uint8 g, Uint8 b){
+    auto surf=SDL_CreateRGBSurface(0, 32, 32, 32, 0,0,0,0);
+    if (!surf){
+        std::cerr << SDL_GetError() << "\n";
+        return nullptr;
     }
-    void quit();
-    void run(){
-        auto i=init();
-        if (!i.first){
-            std::cerr << i.second << "\n";
-            return;
+    auto colour = SDL_MapRGB(surf->format, r, g, b);
+    SDL_FillRect(surf, NULL, colour);
+    return SDL_CreateTextureFromSurface(core::getRenderer(), surf);
+}
+class healthbar{
+    public:
+        core::api::image bg;
+        core::api::image hp;
+        int h;
+        healthbar(int x, int y, int health=100,int w=100, int hh=8) : bg("",false), hp("",false) {
+            h=health;
+            bg.setTex(getRgb(64,21,18), false);
+            hp.setTex(getRgb(0, 255, 0), false);
+            bg.dstrect.x=x;
+            bg.dstrect.y=y;
+            bg.dstrect.w=w;
+            bg.dstrect.h=hh;
+            hp.dstrect=bg.dstrect;
+            changehealth(0);
         }
-        
-        SDL_Event e;
-        bool running=true;
+        void changehealth(int p){
+            h+=p;
+            if (h > 100){
+                h=100;
+            }
+            if (h < 0){
+                h=0;
+            }
+        }
+        void draw(){
+            hp.dstrect=bg.dstrect;
+            hp.dstrect.w = (bg.dstrect.w/100.0f)*h;
+            bg.draw();
+            if (h != 0){
+                hp.draw();
+            }
+        }
+        int getHp(){
+            return h;
+        }
+};
 
-        physics::world world;
-        physics::body body(world, {1,500/32.0f},b2_dynamicBody);
-        body.attachBox(1, 3);
-
-        api::image player("assets/images/player-tmp.jpg");
-        player.dstrect.h*=3;
-
-        physics::body enemybody(world, {32,500/32.0f},b2_dynamicBody);
-        enemybody.attachBox(1, 3);
-
-        api::image enemy("assets/images/player-tmp.jpg");
-        enemy.dstrect.h*=3;
-
-        api::image ground("assets/images/ground-tmp.jpg");;
-        ground.dstrect.y=getH()-120;
-        ground.dstrect.w=getW();
-        ground.dstrect.h=120;
-        
-        physics::body bodygrd(world, {getW()/64.0f,(ground.dstrect.y+10)/32.0f},b2_staticBody);
-        bodygrd.attachBox(ground.dstrect.w/32.0f, ground.dstrect.h/32.0f);;
-
+class player{
+    public:
+        physics::body body;
+        core::api::image pl;
+        core::api::text energybarinfo;
+        core::api::text energybar;
+        core::api::text staminabarinfo;
+        core::api::text staminabar;
+        core::api::text jumps;
         float base_speed_x=10,base_speed_y=-20;
-        constexpr int maxjmpc=2;
+        int maxjmpc=2;
         int jump_counter=maxjmpc;
-
-        auto initial=SDL_GetTicks64();
-        auto lastjmp=SDL_GetTicks64();
+        float curenergy=100;
+        float stamina=100;
+        Uint64 initial=SDL_GetTicks64();
+        Uint64 lastjmp=SDL_GetTicks64();
 
         std::vector<ki> energy;
         std::vector<wave> waves;
         std::vector<Uint64> wavetime;
 
-        SDL_Rect wrldrect={0,0,getW(),getH()};
-        auto lastwave=0;
+        SDL_Rect wrldrect={0,0,core::getW(),core::getH()};
+        int lastwave=0;
 
-        api::font font("assets/fonts/font.ttf", 24);
+        healthbar hp;
+        player(physics::world& world, core::api::font& font) 
+        : body(world, {1,500/32.0f},b2_dynamicBody), pl("assets/images/player-tmp.jpg"),
+        energybarinfo(font, "Energy:- "), energybar(font, "100"), staminabarinfo(font, "Stamina:- "),
+        staminabar(font, "100"), jumps(font, "2/2"), hp(0,0)
 
-        api::text energybarinfo(font, "Energy:- ");
-        api::text energybar(font, "100");
-        energybar.img.dstrect.x=energybarinfo.img.dstrect.w;
+        {
+            energybar.img.dstrect.x=energybarinfo.img.dstrect.w;
+            staminabar.img.dstrect.y=energybar.img.dstrect.h+10;
+            staminabarinfo.img.dstrect.y=energybar.img.dstrect.h+10;
+            staminabar.img.dstrect.x=staminabarinfo.img.dstrect.w;
 
-        api::text staminabarinfo(font, "Stamina:- ");
-        api::text staminabar(font, "100");
+            jumps.img.dstrect.y=staminabar.img.dstrect.h+50;
 
-        staminabar.img.dstrect.y=energybar.img.dstrect.h+10;
-        staminabarinfo.img.dstrect.y=energybar.img.dstrect.h+10;
-        staminabar.img.dstrect.x=staminabarinfo.img.dstrect.w;
-
-        api::text jumps(font, "2/2");
-        jumps.img.dstrect.y=staminabar.img.dstrect.h+50;
-
-        float curenergy=100;
-        float stamina=100;
-
-        SDL_ShowWindow(getWindow());
-        while (running) {
-            while (SDL_PollEvent(&e)) {
-                switch (e.type) {
-                    case SDL_QUIT:
-                        running=false;
-                        break;
-                    case SDL_KEYUP:
-                    case SDL_KEYDOWN:
-                        keylistener::reg(e.key);
-                        break;
-                    case SDL_MOUSEMOTION:
-                        mouslistener::reg(e.motion);
-                        break;
-                    case SDL_MOUSEBUTTONDOWN:
-                    case SDL_MOUSEBUTTONUP:
-                        mouslistener::reg(e.button);
-                        break;
-                    case SDL_MOUSEWHEEL:
-                    mouslistener::reg(e.wheel);
-                    break;
-                    
-                }
-            }
-            if (keylistener::isPressed(SDLK_ESCAPE)){
-                running=false;
-            }
-            world.simulate();
-            auto c = b2World_GetContactEvents(world.get());
-            for (int i=0;i<c.beginCount;i++){
-                auto ba = b2Shape_GetBody(c.beginEvents[i].shapeIdA);
-                auto bb = b2Shape_GetBody(c.beginEvents[i].shapeIdB);
-                float mg=0.1;
-                if (aresame(enemybody.get(), ba)){
-                    for (int j=0;j<energy.size();j++){
-                        if (aresame(bb, energy[j].body.get())){
-                            energy.erase(energy.begin()+j);
-                            j--;
-                            auto v = b2Body_GetLinearVelocity(enemybody.get());
-                            v.x*=mg;
-                            v.y*=mg;
-                            b2Body_SetLinearVelocity(enemybody.get(), v);
-                        }
-                    }
-                }
-                else if (aresame(enemybody.get(), bb)){
-                    for (int j=0;j<energy.size();j++){
-                        if (aresame(ba, energy[j].body.get())){
-                            energy.erase(energy.begin()+j);
-                            j--;
-                            auto v = b2Body_GetLinearVelocity(enemybody.get());
-                            v.x*=mg;
-                            v.y*=mg;
-                            b2Body_SetLinearVelocity(enemybody.get(), v);
-                        }
-                    }
-                }
-                
-            }
+            body.attachBox(1, 3);
+            pl.dstrect.h*=3;
+        }
+        void update(physics::world& world){
+            using namespace core;
             if (keylistener::isDown(SDLK_LSHIFT)){
                 base_speed_x=20;
                 base_speed_y=-15;
@@ -306,7 +247,7 @@ namespace core{
                     }
                 }
                 else if (curenergy<100.0f){
-                    curenergy+=0.05f;
+                    curenergy+=0.1f;
                 }
             }
             if (stamina<100.0f){
@@ -319,20 +260,15 @@ namespace core{
             if ((int)(stamina) != std::stoi(staminabar.getText())){
                 staminabar.setText(std::to_string((int)(stamina)).c_str());
             }
-            SDL_RenderClear(getRenderer());
-            {
-                auto pos=b2Body_GetPosition(body.get());
-                player.dstrect.x=pos.x*32;
-                player.dstrect.y=pos.y*32;
-            }
-            {
-                auto pos=b2Body_GetPosition(enemybody.get());
-                enemy.dstrect.x=pos.x*32;
-                enemy.dstrect.y=pos.y*32;
-            }
-            enemy.draw();
-            player.draw();
-            ground.draw();
+        }
+        bool draw(){
+            auto pos=b2Body_GetPosition(body.get());
+            pl.dstrect.x=pos.x*32;
+            pl.dstrect.y=pos.y*32;
+            hp.bg.dstrect.x=(pl.dstrect.x-(hp.bg.dstrect.w/2.0))+15;
+            hp.bg.dstrect.y=pl.dstrect.y-30;
+            hp.draw();
+            pl.draw();
             for (int i=0;i<energy.size();i++){
                 if (SDL_HasIntersection(&energy[i].img.dstrect, &wrldrect)){
                     energy[i].update();
@@ -352,13 +288,155 @@ namespace core{
             }
             if (stamina < 1){
                 std::cout << "You are out of breath bye\n";
-                running=false;
+                return false;
             }
             jumps.draw();
             staminabarinfo.draw();
             staminabar.draw();
             energybarinfo.draw();
             energybar.draw();
+            return true;
+        }
+};
+class enemy{
+    public:
+        core::api::image enmy;
+        physics::body enemybody;
+        healthbar hp;
+        enemy(physics::world& w) : enmy("assets/images/player-tmp.jpg"), enemybody(w, {32,500/32.0f}, b2_dynamicBody), hp(0,0) {
+            enemybody.attachBox(1, 3);
+            enmy.dstrect.h*=3;
+        }
+        void update(physics::world& world, player& p){
+            auto& energy = p.energy;
+            auto c = b2World_GetSensorEvents(world.get());
+            for (int i=0;i<c.beginCount;i++){
+                auto sha = c.beginEvents[i].sensorShapeId;
+                auto shb = c.beginEvents[i].visitorShapeId;
+                if (b2Shape_IsValid(sha) && b2Shape_IsValid(shb)){
+                    auto ba = b2Shape_GetBody(sha);
+                    auto bb = b2Shape_GetBody(shb);
+                    int mg=5;
+                    if (aresame(enemybody.get(), ba)){
+                        for (int j=0;j<energy.size();j++){
+                            if (aresame(bb, energy[j].body.get())){
+                                auto r = energy[j].rot;
+                                b2Body_ApplyLinearImpulseToCenter(enemybody.get(), {mg*r.c, mg*r.s}, true);
+                                energy.erase(energy.begin()+j);
+                                j--;
+                            }
+                        }
+                    }
+                    else if (aresame(enemybody.get(), bb)){
+                        for (int j=0;j<energy.size();j++){
+                            if (aresame(ba, energy[j].body.get())){
+                                auto r =  energy[j].rot;
+                                b2Body_ApplyLinearImpulseToCenter(enemybody.get(), {mg*r.c, mg*r.s}, true);
+                                energy.erase(energy.begin()+j);
+                                j--;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        void draw(){
+            auto pos=b2Body_GetPosition(enemybody.get());
+            enmy.dstrect.x=pos.x*32;
+            enmy.dstrect.y=pos.y*32;
+            hp.bg.dstrect.x=(enmy.dstrect.x-(hp.bg.dstrect.w/2.0))+15;
+            hp.bg.dstrect.y=enmy.dstrect.y-30;
+            hp.draw();
+            enmy.draw();
+        }
+};
+namespace core{
+    std::pair<bool, const char*> init() {
+        int img_flags = IMG_INIT_PNG;
+        int sound_flags = MIX_INIT_MP3;
+        if (SDL_Init(SDL_INIT_EVERYTHING)){
+            return {false, SDL_GetError()};
+        }
+        if ((IMG_Init(img_flags) & img_flags) != img_flags){
+            return {false, IMG_GetError()};
+        }
+        if (TTF_Init()){
+            return {false, IMG_GetError()};
+        }
+        if ((Mix_Init(sound_flags) & sound_flags) != sound_flags){
+            return {false, Mix_GetError()};
+        }
+        Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024);
+        getWindow()=SDL_CreateWindow(getTitle(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, getW(), getH(), SDL_WINDOW_HIDDEN);
+        if (!getWindow()){
+            return {false, SDL_GetError()};
+        }
+        getRenderer()=SDL_CreateRenderer(getWindow(),-1,0);
+        if (!getRenderer()){
+            return {false, SDL_GetError()};
+        }
+        return {true, "Great"};
+    }
+    void quit();
+    void run(){
+        auto i=init();
+        if (!i.first){
+            std::cerr << i.second << "\n";
+            return;
+        }
+        
+        SDL_Event e;
+        bool running=true;
+
+        physics::world world;
+
+        api::image ground("assets/images/ground-tmp.jpg");;
+        ground.dstrect.y=getH()-120;
+        ground.dstrect.w=getW();
+        ground.dstrect.h=120;
+        
+        physics::body bodygrd(world, {getW()/64.0f,(ground.dstrect.y+10)/32.0f},b2_staticBody);
+        bodygrd.attachBox(ground.dstrect.w/32.0f, ground.dstrect.h/32.0f);;
+
+        api::font font("assets/fonts/font.ttf", 24);
+
+        player p(world, font);
+        enemy em(world);
+
+        SDL_ShowWindow(getWindow());
+        while (running) {
+            while (SDL_PollEvent(&e)) {
+                switch (e.type) {
+                    case SDL_QUIT:
+                        running=false;
+                        break;
+                    case SDL_KEYUP:
+                    case SDL_KEYDOWN:
+                        keylistener::reg(e.key);
+                        break;
+                    case SDL_MOUSEMOTION:
+                        mouslistener::reg(e.motion);
+                        break;
+                    case SDL_MOUSEBUTTONDOWN:
+                    case SDL_MOUSEBUTTONUP:
+                        mouslistener::reg(e.button);
+                        break;
+                    case SDL_MOUSEWHEEL:
+                    mouslistener::reg(e.wheel);
+                    break;
+                    
+                }
+            }
+            if (keylistener::isPressed(SDLK_ESCAPE)){
+                running=false;
+            }
+            world.simulate();
+            p.update(world);
+            em.update(world, p);
+            SDL_RenderClear(getRenderer());
+            p.draw();
+            em.draw();
+            ground.draw();
             SDL_RenderPresent(getRenderer());
             
             keylistener::update();

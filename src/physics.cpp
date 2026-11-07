@@ -69,6 +69,7 @@ namespace physics {
             def.enableContactEvents=true;
             def.material.friction=0;
             def.isSensor=sensor;
+            def.enableSensorEvents=true;
             b2ShapeId sh=b2CreatePolygonShape(get(), &def, &poly);
             if (!b2Shape_IsValid(sh)){
                 std::cerr << "Shape Creation failed\n";

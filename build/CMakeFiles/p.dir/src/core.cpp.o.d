@@ -257,12 +257,13 @@ CMakeFiles/p.dir/src/core.cpp.o: /home/sree/Phantom/Anipunch/src/core.cpp \
  /home/sree/Phantom/Anipunch/include/SDL_version.h \
  /home/sree/Phantom/Anipunch/include/SDL_locale.h \
  /home/sree/Phantom/Anipunch/include/SDL_misc.h \
- /home/sree/Phantom/Anipunch/include/SDL_audio.h \
  /home/sree/Phantom/Anipunch/include/SDL_error.h \
  /home/sree/Phantom/Anipunch/include/SDL_events.h \
  /home/sree/Phantom/Anipunch/include/SDL_keycode.h \
+ /home/sree/Phantom/Anipunch/include/SDL_pixels.h \
  /home/sree/Phantom/Anipunch/include/SDL_rect.h \
  /home/sree/Phantom/Anipunch/include/SDL_render.h \
+ /home/sree/Phantom/Anipunch/include/SDL_surface.h \
  /home/sree/Phantom/Anipunch/include/SDL_timer.h \
  /home/sree/Phantom/Anipunch/include/SDL_video.h \
  /home/sree/Phantom/Anipunch/include/SDL_image.h \
