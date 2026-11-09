@@ -303,6 +303,7 @@ class enemy{
         core::api::image enmy;
         physics::body enemybody;
         healthbar hp;
+        float base_speed_x=5,base_speed_y=-20;
         enemy(physics::world& w) : enmy("assets/images/player-tmp.jpg"), enemybody(w, {32,500/32.0f}, b2_dynamicBody), hp(0,0) {
             enemybody.attachBox(1, 3);
             enmy.dstrect.h*=3;
@@ -320,6 +321,7 @@ class enemy{
                     if (aresame(enemybody.get(), ba)){
                         for (int j=0;j<energy.size();j++){
                             if (aresame(bb, energy[j].body.get())){
+                                hp.changehealth(-5);
                                 auto r = energy[j].rot;
                                 b2Body_ApplyLinearImpulseToCenter(enemybody.get(), {mg*r.c, mg*r.s}, true);
                                 energy.erase(energy.begin()+j);
@@ -329,6 +331,7 @@ class enemy{
                     }
                     else if (aresame(enemybody.get(), bb)){
                         for (int j=0;j<energy.size();j++){
+                            hp.changehealth(-5);
                             if (aresame(ba, energy[j].body.get())){
                                 auto r =  energy[j].rot;
                                 b2Body_ApplyLinearImpulseToCenter(enemybody.get(), {mg*r.c, mg*r.s}, true);
@@ -337,6 +340,23 @@ class enemy{
                             }
                         }
                     }
+                }
+            }
+
+            if (p.pl.dstrect.x < enmy.dstrect.x){
+                if ((enmy.dstrect.x-p.pl.dstrect.x) > 200){
+                    b2Body_ApplyForceToCenter(enemybody.get(), {-1*(base_speed_x+5),0},false);   
+                }
+                else {
+                    b2Body_ApplyForceToCenter(enemybody.get(), {-1*base_speed_x,0},false);   
+                }
+            }
+            else if (p.pl.dstrect.x > enmy.dstrect.x){
+                if ((p.pl.dstrect.x-enmy.dstrect.x) > 200){
+                    b2Body_ApplyForceToCenter(enemybody.get(), {(base_speed_x+5),0},false);   
+                }
+                else {
+                    b2Body_ApplyForceToCenter(enemybody.get(), {base_speed_x,0},false);   
                 }
             }
         }
@@ -434,7 +454,9 @@ namespace core{
             p.update(world);
             em.update(world, p);
             SDL_RenderClear(getRenderer());
-            p.draw();
+            if (running){
+                running = p.draw();
+            }
             em.draw();
             ground.draw();
             SDL_RenderPresent(getRenderer());
