@@ -263,6 +263,7 @@ CMakeFiles/p.dir/src/core.cpp.o: /home/sree/Phantom/Anipunch/src/core.cpp \
  /home/sree/Phantom/Anipunch/include/SDL_pixels.h \
  /home/sree/Phantom/Anipunch/include/SDL_rect.h \
  /home/sree/Phantom/Anipunch/include/SDL_render.h \
+ /home/sree/Phantom/Anipunch/include/SDL_stdinc.h \
  /home/sree/Phantom/Anipunch/include/SDL_surface.h \
  /home/sree/Phantom/Anipunch/include/SDL_timer.h \
  /home/sree/Phantom/Anipunch/include/SDL_video.h \

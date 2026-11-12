@@ -6,6 +6,7 @@
 #include "SDL_pixels.h"
 #include "SDL_rect.h"
 #include "SDL_render.h"
+#include "SDL_stdinc.h"
 #include "SDL_surface.h"
 #include "SDL_timer.h"
 #include "SDL_video.h"
@@ -29,8 +30,15 @@ struct ki{
     physics::body body;
     core::api::image img;
     b2Rot rot;
-    ki(physics::world& w,b2Vec2 pos) : body(w,pos,b2_kinematicBody), img("assets/images/energy-ball.png"){
-        auto r = std::atan2(core::mouslistener::getY()-(pos.y*32), core::mouslistener::getX()-(pos.x*32));
+    ki(physics::world& w,b2Vec2 pos,int x=-1,int y=-1) : body(w,pos,b2_kinematicBody), img("assets/images/energy-ball.png"){
+        float r;
+        if (x > -1 && y > -1){
+            b2Body_SetUserData(body.get(), (void*)123);
+            r = std::atan2(y-(pos.y*32), x-(pos.x*32));
+        }
+        else {
+            r = std::atan2(core::mouslistener::getY()-(pos.y*32), core::mouslistener::getX()-(pos.x*32));
+        }
         rot=b2MakeRot(r);
         b2Body_SetTransform(body.get(), b2Body_GetPosition(body.get()), rot);
         auto f=b2Rot_GetXAxis(rot);
@@ -50,8 +58,13 @@ struct wave{
     physics::body body;
     core::api::image img;
     float r;
-    wave(physics::world& w,b2Vec2 pos) : body(w,pos,b2_staticBody),img("assets/images/energy-wave.png"){
-        r = std::atan2(core::mouslistener::getY()-(pos.y*32), core::mouslistener::getX()-(pos.x*32));
+    wave(physics::world& w,b2Vec2 pos,int x=-1,int y=-1) : body(w,pos,b2_staticBody),img("assets/images/energy-wave.png"){
+        if (x > -1 && y > -1){
+            r = std::atan2(y-(pos.y*32), x-(pos.x*32));
+        }
+        else {
+            r = std::atan2(core::mouslistener::getY()-(pos.y*32), core::mouslistener::getX()-(pos.x*32));
+        }
         b2Rot rot=b2MakeRot(r);
         b2Body_SetTransform(body.get(), b2Body_GetPosition(body.get()), rot);
         img.dstrect.x=pos.x*32;
@@ -303,13 +316,19 @@ class enemy{
         core::api::image enmy;
         physics::body enemybody;
         healthbar hp;
+        float curenergy=100;
+        std::vector<ki> energy;
+        std::vector<wave> waves;
+        std::vector<Uint64> wavetime;
+        int lastwave=0;
+        Uint64 delay=0;
+
         float base_speed_x=5,base_speed_y=-20;
         enemy(physics::world& w) : enmy("assets/images/player-tmp.jpg"), enemybody(w, {32,500/32.0f}, b2_dynamicBody), hp(0,0) {
             enemybody.attachBox(1, 3);
             enmy.dstrect.h*=3;
         }
         void update(physics::world& world, player& p){
-            auto& energy = p.energy;
             auto c = b2World_GetSensorEvents(world.get());
             for (int i=0;i<c.beginCount;i++){
                 auto sha = c.beginEvents[i].sensorShapeId;
@@ -317,26 +336,53 @@ class enemy{
                 if (b2Shape_IsValid(sha) && b2Shape_IsValid(shb)){
                     auto ba = b2Shape_GetBody(sha);
                     auto bb = b2Shape_GetBody(shb);
-                    int mg=5;
-                    if (aresame(enemybody.get(), ba)){
-                        for (int j=0;j<energy.size();j++){
-                            if (aresame(bb, energy[j].body.get())){
+                    int mg=10;
+                    if (b2Body_GetUserData(ba) || b2Body_GetUserData(ba)){
+                        if (aresame(p.body.get(), ba)){
+                            for (int j=0;j<energy.size();j++){
+                                if (aresame(bb, energy[j].body.get())){
+                                    hp.changehealth(-5);
+                                    auto r = energy[j].rot;
+                                    b2Body_ApplyLinearImpulseToCenter(p.body.get(), {mg*r.c, mg*r.s}, true);
+                                    energy.erase(energy.begin()+j);
+                                    j--;
+                                }
+                            }
+                        }
+                        else if (aresame(p.body.get(), bb)){
+                            for (int j=0;j<energy.size();j++){
                                 hp.changehealth(-5);
-                                auto r = energy[j].rot;
-                                b2Body_ApplyLinearImpulseToCenter(enemybody.get(), {mg*r.c, mg*r.s}, true);
-                                energy.erase(energy.begin()+j);
-                                j--;
+                                if (aresame(ba, energy[j].body.get())){
+                                    auto r =  energy[j].rot;
+                                    b2Body_ApplyLinearImpulseToCenter(p.body.get(), {mg*r.c, mg*r.s}, true);
+                                    energy.erase(energy.begin()+j);
+                                    j--;
+                                }
                             }
                         }
                     }
-                    else if (aresame(enemybody.get(), bb)){
-                        for (int j=0;j<energy.size();j++){
-                            hp.changehealth(-5);
-                            if (aresame(ba, energy[j].body.get())){
-                                auto r =  energy[j].rot;
-                                b2Body_ApplyLinearImpulseToCenter(enemybody.get(), {mg*r.c, mg*r.s}, true);
-                                energy.erase(energy.begin()+j);
-                                j--;
+                    else {
+                        mg=410;
+                        if (aresame(enemybody.get(), ba)){
+                            for (int j=0;j<energy.size();j++){
+                                if (aresame(bb, energy[j].body.get())){
+                                    hp.changehealth(-5);
+                                    auto r = energy[j].rot;
+                                    b2Body_ApplyLinearImpulseToCenter(enemybody.get(), {mg*r.c, mg*r.s}, true);
+                                    energy.erase(energy.begin()+j);
+                                    j--;
+                                }
+                            }
+                        }
+                        else if (aresame(enemybody.get(), bb)){
+                            for (int j=0;j<energy.size();j++){
+                                hp.changehealth(-5);
+                                if (aresame(ba, energy[j].body.get())){
+                                    auto r =  energy[j].rot;
+                                    b2Body_ApplyLinearImpulseToCenter(enemybody.get(), {mg*r.c, mg*r.s}, true);
+                                    energy.erase(energy.begin()+j);
+                                    j--;
+                                }
                             }
                         }
                     }
@@ -359,15 +405,64 @@ class enemy{
                     b2Body_ApplyForceToCenter(enemybody.get(), {base_speed_x,0},false);   
                 }
             }
+            bool shouldenergy=false,shouldwave=false;
+
+            auto d = std::abs(p.pl.dstrect.x-enmy.dstrect.x);
+            if (SDL_GetTicks64() > (delay+2000)){
+                delay=SDL_GetTicks64();
+                if (d < 250){
+                    shouldwave=true;
+                }
+                else if (curenergy>30){
+                    shouldenergy=true;
+                }
+            }
+            else if (curenergy<100.0f){
+                curenergy+=0.1f;
+            }
+            if (shouldenergy){
+                if (curenergy > 4){
+                    energy.emplace_back(world, b2Body_GetPosition(enemybody.get()), p.pl.dstrect.x, p.pl.dstrect.y);
+                    curenergy-=5;
+                }
+            }
+            else if (shouldwave){
+                if (SDL_GetTicks64() > (lastwave+5000)){
+                    if (curenergy > 29){
+                        waves.emplace_back(world,b2Body_GetPosition(enemybody.get()), p.pl.dstrect.x, p.pl.dstrect.y);
+                        wavetime.push_back(SDL_GetTicks64());
+                        lastwave = SDL_GetTicks64();
+                        curenergy-=30;
+                    }
+                }
+            }
         }
         void draw(){
             auto pos=b2Body_GetPosition(enemybody.get());
+            SDL_Rect wrldrect = {0,0,core::getW(), core::getH()};
             enmy.dstrect.x=pos.x*32;
             enmy.dstrect.y=pos.y*32;
             hp.bg.dstrect.x=(enmy.dstrect.x-(hp.bg.dstrect.w/2.0))+15;
             hp.bg.dstrect.y=enmy.dstrect.y-30;
             hp.draw();
             enmy.draw();
+            for (int i=0;i<energy.size();i++){
+                if (SDL_HasIntersection(&energy[i].img.dstrect, &wrldrect)){
+                    energy[i].update();
+                }
+                else {
+                    energy.erase(energy.begin()+i);
+                    i--;
+                }
+            }
+            for (int i=0;i<waves.size();i++){
+                waves[i].update();
+                if (SDL_GetTicks64() > wavetime[i]+4000){
+                    wavetime.erase(wavetime.begin()+i);
+                    waves.erase(waves.begin()+i);
+                    i--;
+                }
+            }
         }
 };
 namespace core{
