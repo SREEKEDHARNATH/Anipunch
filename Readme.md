@@ -7,6 +7,7 @@
 This still is just barebone.
 
 currently it has some physics and some sort of ai
+You need the latest distro with updates.
 
 the biggest issue i faced is on the physics of attacks as at first it would just shoot them away which made me to learn how to get contact events and get bodies and match them.
 
