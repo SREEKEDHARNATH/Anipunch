@@ -24,6 +24,20 @@ This has heakth bar which is easy as you just manipulate width.
 
 only when you hold e enegy increases
 
+## Steps to run
+* Download
+```
+wget "https://github.com/SREEKEDHARNATH/Anipunch/releases/download/v1.1/Anipunch-x86_64.AppImage"
+```
+* Give executable permissions
+```
+chmod +x Anipunch-x86_64.AppImage
+```
+* run it
+```
+./Anipunch-x86_64.AppImage
+```
+
 ## pictures
 
 ![Screenshot 1](assets/images/screenshots/1.png)
